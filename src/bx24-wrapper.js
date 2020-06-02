@@ -1,5 +1,5 @@
 /**
- * Простая обертка на JavaScript для стандартной JS-библиотеки Битрикс24,
+ * Простой класс-обертка на JavaScript для стандартной JS-библиотеки Битрикс24,
  * позволяющая избежать ада колбеков и работать c асинхроннми функциями и генераторами.
  *
  * @author    andrey-tech
@@ -7,10 +7,11 @@
  * @see https://github.com/andrey-tech/bx24-wrapper-js
  * @license   MIT
  *
- * @version 1.1.0
+ * @version 1.2.0
  *
  * v1.0.0 (01.12.2019) Начальный релиз
  * v1.1.0 (28.05.2020) Рефракторинг
+ * v1.2.0 (02.06.2020) Удален метод init()
  * 
  */
 
@@ -31,19 +32,19 @@ class BX24Wrapper {
 
         /**
          * Максимальное число команд в одном пакетном запросе callBatch() (не более 50)
-         * @type {Number}
+         * @type {number}
          */
         this.batchSize = 50;
 
         /**
-         * Функция для обновления прогресса выполнения пакетных запросов
-         * @type {Object}
+         * Функция-заглушка для контроля прогресса выполнения запроса
+         * @type {function}
          */
         this.progress = percent => {};
 
         /**
          * Максимальное число запросов к API в секунду (не более 2-х)
-         * @type {Number}
+         * @type {number}
          * @see https://dev.1c-bitrix.ru/rest_help/rest_sum/index.php
          */
         this.throttle = 2;
@@ -57,27 +58,16 @@ class BX24Wrapper {
 
         /**
          * Время отправки последнего запроса к API, миллисекунды
-         * @type {Number}
+         * @type {number}
          */
         this.lastRequestTime = 0;
     }
 
     /**
-     * Вызывает BX24.init()
-     * @return {Object} Promise
-     * @see https://dev.1c-bitrix.ru/rest_help/js_library/system/init.php
-     */
-    init() {
-        return new Promise(resolve => {
-            BX24.init(resolve);
-        });
-    }
-
-    /**
      * Вызывает BX24.callMethod() c заданным методом и параметрами и возвращает промис
-     * @param {String} method Метод
-     * @param  {Object} params Параметры запроса
-     * @return {Object} Promise
+     * @param {string} method Метод
+     * @param  {object} params Параметры запроса
+     * @return {object} Promise
      * @see https://dev.1c-bitrix.ru/rest_help/js_library/rest/callMethod.php
      */
     async callMethod(method, params = {}) {
@@ -96,9 +86,9 @@ class BX24Wrapper {
 
     /**
      * Вызывает BX24.callMethod() с заданным списочным методом и параметрами и возвращает промис
-     * @param {String} method Списочный метод
-     * @param  {Object} params Параметры запроса
-     * @return {Object} Promise
+     * @param {string} method Списочный метод
+     * @param  {object} params Параметры запроса
+     * @return {object} Promise
      * @see https://dev.1c-bitrix.ru/rest_help/js_library/rest/callMethod.php
      */
     async callListMethod(method, params = {}) {
@@ -133,9 +123,9 @@ class BX24Wrapper {
     /**
      * Вызывает BX24.callMethod() с заданным списочным методом и параметрами и возвращает генератор
      * Реализует быстрый алгоритм, описанный в https://dev.1c-bitrix.ru/rest_help/rest_sum/start.php
-     * @param {String} method Списочный метод
-     * @param  {Object} params Параметры запроса
-     * @return {Object} Generator
+     * @param {string} method Списочный метод
+     * @param  {object} params Параметры запроса
+     * @return {object} Generator
      * @see https://dev.1c-bitrix.ru/rest_help/js_library/rest/callMethod.php
      */
     async *fetchList(method, params = {}) {
@@ -177,10 +167,10 @@ class BX24Wrapper {
     }
 
     /**
-     * Вызывает BX24.callBatch() с числом запросов не более 50 и возвращает Promise
-     * @param  {Array|Object} method Пакет запросов
-     * @param  {Bool} haltOnError Прерывать исполнение пакета в при возникновении ошибки
-     * @return {Object} Promise
+     * Вызывает BX24.callBatch() с максимальным числом команд не более 50 и возвращает Promise
+     * @param  {array|object} method Пакет запросов
+     * @param  {bool} haltOnError Прерывать исполнение пакета в при возникновении ошибки
+     * @return {object} Promise
      * @see https://dev.1c-bitrix.ru/rest_help/js_library/rest/callBatch.php
      */
     async callBatch(calls, haltOnError = true) {
@@ -215,9 +205,9 @@ class BX24Wrapper {
 
     /**
      * Вызывает BX24.callBatch() с произвольным числом запросов и возвращает Promise
-     * @param  {Array} method Пакет запросов
-     * @param  {Bool} haltOnError Прерывать исполнение пакета в при возникновении ошибки
-     * @return {Object} Promise
+     * @param  {array} method Пакет запросов
+     * @param  {bool} haltOnError Прерывать исполнение пакета в при возникновении ошибки
+     * @return {object} Promise
      * @see https://dev.1c-bitrix.ru/rest_help/js_library/rest/callBatch.php
      */
     async callLongBatch(calls, haltOnError = true) {
@@ -251,10 +241,10 @@ class BX24Wrapper {
     }
 
     /**
-     * Вызывает BX24.callBatch() с произвольным числом запросов и возвращает генератор
-     * @param  {Array} method Пакет запросов
-     * @param  {Bool} haltOnError Прерывать исполнение пакета в при возникновении ошибки
-     * @return {Object} Generator
+     * Вызывает BX24.callBatch() с произвольным числом команд в запросе и возвращает генератор
+     * @param  {array} method Пакет запросов
+     * @param  {bool} haltOnError Прерывать исполнение пакета в при возникновении ошибки
+     * @return {object} Generator
      * @see https://dev.1c-bitrix.ru/rest_help/js_library/rest/callBatch.php
      */
     async *callLargeBatch(calls, haltOnError = true) {
@@ -289,7 +279,7 @@ class BX24Wrapper {
 
     /**
      * Обеспечивет троттлинг запросов к API
-     * @return {Object} Promise
+     * @return {object} Promise
      */
     throttleCall() {
         return new Promise(resolve => {
