@@ -2,10 +2,9 @@
 
 ![Bitrix24 logo](./assets/bitrix24-logo.png)
 
-Простой класс-обертка на JavaScript для стандартной [JS-библиотеки](https://dev.1c-bitrix.ru/rest_help/js_library/index.php) Битрикс24,
-которая позволяет избежать [ада колбеков](http://callbackhell.ru) и работать c REST API Битрикс24 с помощью асинхронных функций и генераторов ECMAScript 7.
-
-**Документация находится в процессе разработки.**
+Простой класс-обертка на JavaScript для стандартной [JS-библиотеки](https://dev.1c-bitrix.ru/rest_help/js_library/index.php) Битрикс24.
+Позволяет избежать [ада колбеков](http://callbackhell.ru) и работать c REST API Битрикс24
+с помощью асинхронных функций и асинхронных генераторов ECMAScript 9.
 
 ## Содержание
 <!-- MarkdownTOC levels="1,2,3,4,5,6" autoanchor="true" autolink="true" -->
@@ -19,6 +18,7 @@
     - [Метод `async callBatch()`](#%D0%9C%D0%B5%D1%82%D0%BE%D0%B4-async-callbatch)
     - [Метод `async callLongBatch()`](#%D0%9C%D0%B5%D1%82%D0%BE%D0%B4-async-calllongbatch)
     - [Метод `async *callLargeBatch()`](#%D0%9C%D0%B5%D1%82%D0%BE%D0%B4-async-calllargebatch)
+    - [Метод `getLastResult()`](#%D0%9C%D0%B5%D1%82%D0%BE%D0%B4-getlastresult)
 - [Обработка ошибок](#%D0%9E%D0%B1%D1%80%D0%B0%D0%B1%D0%BE%D1%82%D0%BA%D0%B0-%D0%BE%D1%88%D0%B8%D0%B1%D0%BE%D0%BA)
 - [Автор](#%D0%90%D0%B2%D1%82%D0%BE%D1%80)
 - [Лицензия](#%D0%9B%D0%B8%D1%86%D0%B5%D0%BD%D0%B7%D0%B8%D1%8F)
@@ -28,16 +28,55 @@
 <a id="%D0%A2%D1%80%D0%B5%D0%B1%D0%BE%D0%B2%D0%B0%D0%BD%D0%B8%D1%8F"></a>
 ## Требования
 
+- Стандартная [JS-библиотека](https://dev.1c-bitrix.ru/rest_help/js_library/index.php) Битрикс24,
+которая представляет собой JS SDK для REST, что позволяет обращаться к REST прямо из front-end приложения 
+не погружаясь в реализацию авторизации по OAuth 2.0.  
+Библиотека подключается следующим образом:
+```html
+<script src="//api.bitrix24.com/api/v1/"></script>
+```
+- Среда исполнения JavaScript, соответствущая спецификации ECMAScript 9 ([ECMAScript® 2018](http://www.ecma-international.org/ecma-262/9.0/index.html)):
+    - Google Chrome >= 83
+    - Mozilla Firefox >= 76
+    - Apple Safari >= 13.1
+    - Microsoft Edge >= 83
+    - Opera >= 68
+
 <a id="%D0%9A%D0%BB%D0%B0%D1%81%D1%81-bx24wrapper"></a>
 ## Класс BX24Wrapper
 
+- `new BX24Wrapper();`
 
+Дополнительные параметры работы устанавливаются через свойства объекта `BX24Wrapper`.
 
+Свойство                | По умолчанию     | Описание
+----------------------- | ---------------- | --------
+`batchSize`             | 50               | Максимальное число команд в одном пакете запросе ([не более 50](https://dev.1c-bitrix.ru/rest_help/general/lists.php))
+`throttle`              | 2                | Максимальное число запросов к API в секунду ([не более 2-х запросов в секунду](https://dev.1c-bitrix.ru/rest_help/rest_sum/index.php))
+`progress`              | `percent => {};` | Функция для контроля прогресса выполнения запросов в методах `callListMethod()`, `fetchList()`, `callLongBatch()` и `callLargeBatch()` (`percent` - прогресс, %)
+
+```js
+(async () => {
+    let bx24 = new BX24Wrapper();
+
+    // Устанавливаем максимальное число команд в одном пакете запросе
+    bx24.batchSize = 25;
+    
+    // Устанавливаем троттлинг запросов к API на уровне 1 запрос в 2 секунды
+    bx24.throttle = 0.5;
+
+    // Устанавливаем собственную функцию для контроля прогресса выполнения запросов в процентах
+    bx24.progress = percent => console.log(`Progress: ${percent}%`);
+
+})().catch(error => console.log('Error:', error));
+```
+ 
 <a id="%D0%9C%D0%B5%D1%82%D0%BE%D0%B4%D1%8B-%D0%BA%D0%BB%D0%B0%D1%81%D1%81%D0%B0-bx24wrapper"></a>
 ## Методы класса BX24Wrapper
 
 <a id="%D0%9C%D0%B5%D1%82%D0%BE%D0%B4-async-callmethod"></a>
 ### Метод `async callMethod()`
+
 Вызывает указанный метод REST-сервиса с заданными параметрам и возвращает объект Promise (промис).  
 Обертка метода [callMethod](https://dev.1c-bitrix.ru/rest_help/js_library/rest/callMethod.php) стандартной библиотеки.
 
@@ -59,6 +98,7 @@
 
 <a id="%D0%9C%D0%B5%D1%82%D0%BE%D0%B4-async-calllistmethod"></a>
 ### Метод `async callListMethod()`
+
 Вызывает указанный **списочный** метод REST-сервиса с заданными параметрам и возвращает объект Promise (промис).
 Позволяет одним вызовом загружать произвольное число сущностей с фильтрацией по параметрам в виде массива объектов
 и контролировать прогресс выполнения загрузки.
@@ -91,9 +131,11 @@
 
 <a id="%D0%9C%D0%B5%D1%82%D0%BE%D0%B4-async-fetchlist"></a>
 ### Метод `async *fetchList()`
+
 Вызывает указанный **списочный** метод REST-сервиса с заданными параметрам и возвращает объект Generator (генератор).
 Позволяет одним вызовом загружать произвольное число сущностей с фильтрацией по параметрам в виде массива объектов
-и контролировать прогресс выполнения загрузки.
+и контролировать прогресс выполнения загрузки.  
+Реализует быстрый алгоритм, описанный в статье ["Как правильно выгружать большие объемы данных"](https://dev.1c-bitrix.ru/rest_help/rest_sum/start.php).  
 Использование асинхронного генератора дает существенную экономию памяти при обработке большого количества сущностей.
 
 - `fetchList(listMethod [, params = {} ]);`  
@@ -125,6 +167,7 @@
 
 <a id="%D0%9C%D0%B5%D1%82%D0%BE%D0%B4-async-callbatch"></a>
 ### Метод `async callBatch()`
+
 Отправляет пакет запросов к REST-сервису с максимальным числом команд в запросе 50 и возвращает Promise (промис).
 Позволяет получить результаты пакетного выполнения запросов в виде массива или объекта.
 Обертка метода [callBatch](https://dev.1c-bitrix.ru/rest_help/js_library/rest/callBatch.php) стандартной библиотеки.
@@ -165,6 +208,7 @@
 
 <a id="%D0%9C%D0%B5%D1%82%D0%BE%D0%B4-async-calllongbatch"></a>
 ### Метод `async callLongBatch()`
+
 Отправляет пакет запросов к REST-сервису в виде массива с произвольным числом команд в запросе и возвращает Promise (промис).
 Позволяет получить результаты пакетного выполнения запросов в виде массива.
 
@@ -194,6 +238,7 @@
 
 <a id="%D0%9C%D0%B5%D1%82%D0%BE%D0%B4-async-calllargebatch"></a>
 ### Метод `async *callLargeBatch()`
+
 Отправляет пакет запросов к REST-сервису в виде массива с произвольным числом команд в запросе и возвращает Generator (генератор).
 Позволяет получить результаты пакетного выполнения запросов в виде массива.
 Использование асинхронного генератора дает существенную экономию памяти при работе с длинными пакетами запросов.
@@ -215,7 +260,7 @@
         [ 'crm.product.get', { id: 1 } ]
     ];
 
-    // Отправляем длинный пакет запросов в виде массива используя асинхронный генератор
+    // Отправляем длинный пакет запросов в виде массива, используя асинхронный генератор
     let generator = bx24.callLargeBatch(calls, true);
     for await (let response of generator) {
         console.log('Response array:', response);
@@ -224,8 +269,39 @@
 })().catch(error => console.log('Error:', error));
 ```
 
+<a id="%D0%9C%D0%B5%D1%82%D0%BE%D0%B4-getlastresult"></a>
+### Метод `getLastResult()`
+
+Возвращает последний объект [ajaxResult](https://dev.1c-bitrix.ru/rest_help/js_library/rest/callMethod.php),
+полученный от стандартной библиотеки Битрикс24.
+
+- `getLastResult();`
+
+
 <a id="%D0%9E%D0%B1%D1%80%D0%B0%D0%B1%D0%BE%D1%82%D0%BA%D0%B0-%D0%BE%D1%88%D0%B8%D0%B1%D0%BE%D0%BA"></a>
 ## Обработка ошибок
+
+При возникновении ошибок в методах класса выбрасываются исключения.  
+Последний объект [ajaxResult](https://dev.1c-bitrix.ru/rest_help/js_library/rest/callMethod.php), полученный от стандартной библиотеки Битрикс24, доступен через вызов метода `getLastResult()`.
+
+```js
+(async () => {
+
+    let bx24 = new BX24Wrapper();
+
+    // Загружаем несуществующую компанию по её ID и перехватываем возникающее исключение
+    let company = await bx24.callMethod('crm.company.get', { ID: 9999999999 })
+        .catch(error => {
+            console.log('Error:', error);
+            
+            // Получаем последний объект ajaxResult, полученный от стандартной библиотеки Битрикс24
+            let ajaxResult = bx24.getLastResult();
+            console.log('ajaxResult:', ajaxResult);
+        });
+
+})().catch(error => console.log('Error:', error));
+```
+
 
 
 <a id="%D0%90%D0%B2%D1%82%D0%BE%D1%80"></a>

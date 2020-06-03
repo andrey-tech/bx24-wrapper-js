@@ -1,17 +1,19 @@
 /**
  * Простой класс-обертка на JavaScript для стандартной JS-библиотеки Битрикс24,
- * позволяющая избежать ада колбеков и работать c асинхроннми функциями и генераторами.
+ * позволяющая избежать ада колбеков и работать c асинхроннми функциями
+ * и асинхронными генераторами ECMAScript 9.
  *
  * @author    andrey-tech
  * @copyright 2019-2020 andrey-tech
  * @see https://github.com/andrey-tech/bx24-wrapper-js
  * @license   MIT
  *
- * @version 1.2.0
+ * @version 1.3.0
  *
  * v1.0.0 (01.12.2019) Начальный релиз
  * v1.1.0 (28.05.2020) Рефракторинг
  * v1.2.0 (02.06.2020) Удален метод init()
+ * v1.3.0 (06.06.2020) Добавлен метод getLastResult()
  * 
  */
 
@@ -37,7 +39,7 @@ class BX24Wrapper {
         this.batchSize = 50;
 
         /**
-         * Функция-заглушка для контроля прогресса выполнения запроса
+         * Функция для контроля прогресса выполнения запросов
          * @type {function}
          */
         this.progress = percent => {};
@@ -51,7 +53,7 @@ class BX24Wrapper {
 
         /**
          * Последний объект ajaxResult, полученный от библиотеки Битрикс24
-         * @type {Object}
+         * @type {оbject}
          * @see https://dev.1c-bitrix.ru/rest_help/js_library/rest/callMethod.php
          */
         this.lastResult = {};
@@ -64,8 +66,16 @@ class BX24Wrapper {
     }
 
     /**
-     * Вызывает BX24.callMethod() c заданным методом и параметрами и возвращает промис
-     * @param {string} method Метод
+     * Возвращает последний объект ajaxResult, полученный от библиотеки Битрикс24
+     * @type {оbject} ajaxResult
+     */
+    getLastResult() {
+        return this.lastResult;
+    }
+
+    /**
+     * Вызывает BX24.callMethod() c заданным методом и параметрами и возвращает объект промис
+     * @param  {string} method Метод
      * @param  {object} params Параметры запроса
      * @return {object} Promise
      * @see https://dev.1c-bitrix.ru/rest_help/js_library/rest/callMethod.php
@@ -85,8 +95,8 @@ class BX24Wrapper {
     }
 
     /**
-     * Вызывает BX24.callMethod() с заданным списочным методом и параметрами и возвращает промис
-     * @param {string} method Списочный метод
+     * Вызывает BX24.callMethod() с заданным списочным методом и параметрами и возвращает объект промис
+     * @param  {string} method Списочный метод
      * @param  {object} params Параметры запроса
      * @return {object} Promise
      * @see https://dev.1c-bitrix.ru/rest_help/js_library/rest/callMethod.php
@@ -121,9 +131,9 @@ class BX24Wrapper {
     }
 
     /**
-     * Вызывает BX24.callMethod() с заданным списочным методом и параметрами и возвращает генератор
+     * Вызывает BX24.callMethod() с заданным списочным методом и параметрами и возвращает объект генератор
      * Реализует быстрый алгоритм, описанный в https://dev.1c-bitrix.ru/rest_help/rest_sum/start.php
-     * @param {string} method Списочный метод
+     * @param  {string} method Списочный метод
      * @param  {object} params Параметры запроса
      * @return {object} Generator
      * @see https://dev.1c-bitrix.ru/rest_help/js_library/rest/callMethod.php
@@ -167,7 +177,7 @@ class BX24Wrapper {
     }
 
     /**
-     * Вызывает BX24.callBatch() с максимальным числом команд не более 50 и возвращает Promise
+     * Вызывает BX24.callBatch() с максимальным числом команд не более 50 и возвращает объект промис
      * @param  {array|object} method Пакет запросов
      * @param  {bool} haltOnError Прерывать исполнение пакета в при возникновении ошибки
      * @return {object} Promise
@@ -204,7 +214,7 @@ class BX24Wrapper {
     }
 
     /**
-     * Вызывает BX24.callBatch() с произвольным числом запросов и возвращает Promise
+     * Вызывает BX24.callBatch() с произвольным числом запросов и возвращает объект промис
      * @param  {array} method Пакет запросов
      * @param  {bool} haltOnError Прерывать исполнение пакета в при возникновении ошибки
      * @return {object} Promise
@@ -241,7 +251,7 @@ class BX24Wrapper {
     }
 
     /**
-     * Вызывает BX24.callBatch() с произвольным числом команд в запросе и возвращает генератор
+     * Вызывает BX24.callBatch() с произвольным числом команд в запросе и возвращает объект генератор
      * @param  {array} method Пакет запросов
      * @param  {bool} haltOnError Прерывать исполнение пакета в при возникновении ошибки
      * @return {object} Generator
