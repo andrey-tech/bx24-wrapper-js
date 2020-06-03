@@ -18,6 +18,7 @@
     - [Метод `async callBatch()`](#%D0%9C%D0%B5%D1%82%D0%BE%D0%B4-async-callbatch)
     - [Метод `async callLongBatch()`](#%D0%9C%D0%B5%D1%82%D0%BE%D0%B4-async-calllongbatch)
     - [Метод `async *callLargeBatch()`](#%D0%9C%D0%B5%D1%82%D0%BE%D0%B4-async-calllargebatch)
+    - [Метод `static createCalls()`](#%D0%9C%D0%B5%D1%82%D0%BE%D0%B4-static-createcalls)
     - [Метод `getLastResult()`](#%D0%9C%D0%B5%D1%82%D0%BE%D0%B4-getlastresult)
 - [Обработка ошибок](#%D0%9E%D0%B1%D1%80%D0%B0%D0%B1%D0%BE%D1%82%D0%BA%D0%B0-%D0%BE%D1%88%D0%B8%D0%B1%D0%BE%D0%BA)
 - [Автор](#%D0%90%D0%B2%D1%82%D0%BE%D1%80)
@@ -269,6 +270,39 @@
 })().catch(error => console.log('Error:', error));
 ```
 
+<a id="%D0%9C%D0%B5%D1%82%D0%BE%D0%B4-static-createcalls"></a>
+### Метод `static createCalls()`
+
+Создает пакет однотипных запросов для методов `callBatch()`, `callLongBatch()` и `callLargeBatch()`
+и возвращает пакет запросов в виде массива.
+
+- `BX24Wrapper.createCalls(method, items);`  
+    Параметры:
+    - *string* `method` - строка, указывающая вызываемый метод REST-сервиса во всех запросах;
+    - *array* `items` - массив параметров запросов;
+
+```js
+(async () => {
+    let bx24 = new BX24Wrapper();
+
+    // Массив параметров однотипных запросов
+    let items = [
+        { id: 4 },
+        { id: 6 },
+        { id: 8 }
+    ];
+
+    // Создаем пакет запросов в виже массива
+    let calls = BX24Wrapper.createCalls('crm.contact.get', items);
+
+    // Отправляем пакет запросов в виде массива
+    let response = await bx24.callBatch(calls);
+    console.log('Response:', response);
+  
+})().catch(error => console.log('Error:', error));
+```
+
+
 <a id="%D0%9C%D0%B5%D1%82%D0%BE%D0%B4-getlastresult"></a>
 ### Метод `getLastResult()`
 
@@ -301,8 +335,6 @@
 
 })().catch(error => console.log('Error:', error));
 ```
-
-
 
 <a id="%D0%90%D0%B2%D1%82%D0%BE%D1%80"></a>
 ## Автор

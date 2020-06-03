@@ -8,12 +8,13 @@
  * @see https://github.com/andrey-tech/bx24-wrapper-js
  * @license   MIT
  *
- * @version 1.3.0
+ * @version 1.4.0
  *
  * v1.0.0 (01.12.2019) Начальный релиз
  * v1.1.0 (28.05.2020) Рефракторинг
  * v1.2.0 (02.06.2020) Удален метод init()
- * v1.3.0 (06.06.2020) Добавлен метод getLastResult()
+ * v1.3.0 (03.06.2020) Добавлен метод getLastResult()
+ * v1.4.0 (03.06.2020) Добавлен метод createCalls()
  * 
  */
 
@@ -49,7 +50,7 @@ class BX24Wrapper {
          * @type {number}
          * @see https://dev.1c-bitrix.ru/rest_help/rest_sum/index.php
          */
-        this.throttle = 2;
+        this.throttle = 0.5;
 
         /**
          * Последний объект ajaxResult, полученный от библиотеки Битрикс24
@@ -67,15 +68,29 @@ class BX24Wrapper {
 
     /**
      * Возвращает последний объект ajaxResult, полученный от библиотеки Битрикс24
-     * @type {оbject} ajaxResult
+     * @type {оbject}
      */
     getLastResult() {
         return this.lastResult;
     }
 
     /**
+     * Создает пакет однотипных запросов в виде массива
+     * @param  {string} method Метод запроса
+     * @param  {array} items Массив параметров запросов
+     * @return {array} Пакет запросов
+     */
+    static createCalls(method, items) {
+        let calls = [];
+        for (let item of items) {
+            calls.push([ method, item ]);
+        }
+        return calls;
+    }    
+
+    /**
      * Вызывает BX24.callMethod() c заданным методом и параметрами и возвращает объект промис
-     * @param  {string} method Метод
+     * @param  {string} method Метод запроса
      * @param  {object} params Параметры запроса
      * @return {object} Promise
      * @see https://dev.1c-bitrix.ru/rest_help/js_library/rest/callMethod.php
@@ -96,7 +111,7 @@ class BX24Wrapper {
 
     /**
      * Вызывает BX24.callMethod() с заданным списочным методом и параметрами и возвращает объект промис
-     * @param  {string} method Списочный метод
+     * @param  {string} method Списочный метод запроса
      * @param  {object} params Параметры запроса
      * @return {object} Promise
      * @see https://dev.1c-bitrix.ru/rest_help/js_library/rest/callMethod.php
@@ -133,7 +148,7 @@ class BX24Wrapper {
     /**
      * Вызывает BX24.callMethod() с заданным списочным методом и параметрами и возвращает объект генератор
      * Реализует быстрый алгоритм, описанный в https://dev.1c-bitrix.ru/rest_help/rest_sum/start.php
-     * @param  {string} method Списочный метод
+     * @param  {string} method Списочный метод запроса
      * @param  {object} params Параметры запроса
      * @return {object} Generator
      * @see https://dev.1c-bitrix.ru/rest_help/js_library/rest/callMethod.php
