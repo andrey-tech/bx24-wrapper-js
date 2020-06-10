@@ -50,7 +50,7 @@ class BX24Wrapper {
          * @type {number}
          * @see https://dev.1c-bitrix.ru/rest_help/rest_sum/index.php
          */
-        this.throttle = 0.5;
+        this.throttle = 2;
 
         /**
          * Последний объект ajaxResult, полученный от библиотеки Битрикс24
