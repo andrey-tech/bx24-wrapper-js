@@ -1,0 +1,14 @@
+{
+    "name": "andrey-tech/bx24-wrapper-js",
+    "description": "Простой класс-обертка на JavaScript для стандартной JS-библиотеки Битрикс24. Позволяет избежать ада колбеков и работать c REST API Битрикс24 с помощью асинхронных функций и асинхронных генераторов ECMAScript 9",
+    "homepage": "https://github.com/andrey-tech/bx24-wrapper-js",
+    "minimum-stability": "stable",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "andrey-tech",
+            "homepage": "https://github.com/andrey-tech/",
+            "role": "Developer"
+        }
+    ]
+}
