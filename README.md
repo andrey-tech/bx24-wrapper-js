@@ -36,7 +36,8 @@
 ```html
 <script src="//api.bitrix24.com/api/v1/"></script>
 ```
-- Среда исполнения JavaScript, соответствущая спецификации ECMAScript 9 ([ECMAScript® 2018](http://www.ecma-international.org/ecma-262/9.0/index.html)):
+- Среда исполнения JavaScript, соответствущая спецификации ECMAScript 9 ([ECMAScript® 2018](http://www.ecma-international.org/ecma-262/9.0/index.html))
+в части [поддержки](https://caniuse.com/#search=for%20await) выражения `for await...of`:
     - Google Chrome >= 83
     - Mozilla Firefox >= 76
     - Apple Safari >= 13.1
