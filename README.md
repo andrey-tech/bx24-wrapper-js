@@ -38,11 +38,11 @@
 ```
 - Среда исполнения JavaScript, соответствущая спецификации ECMAScript 9 ([ECMAScript® 2018](http://www.ecma-international.org/ecma-262/9.0/index.html))
 в части [поддержки асинхронных генераторов JavaScript](https://caniuse.com/#search=async%20generator) :
-    - Google Chrome >= 83
-    - Mozilla Firefox >= 76
-    - Apple Safari >= 13.1
-    - Microsoft Edge >= 83
-    - Opera >= 68
+    - Google Chrome >= 63
+    - Mozilla Firefox >= 55
+    - Apple Safari >= 12
+    - Microsoft Edge >= 79
+    - Opera >= 50
 
 <a id="%D0%9A%D0%BB%D0%B0%D1%81%D1%81-bx24wrapper"></a>
 ## Класс BX24Wrapper
