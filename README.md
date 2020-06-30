@@ -2,7 +2,7 @@
 
 ![Bitrix24 logo](./assets/bitrix24-logo.png)
 
-Простой класс-обертка на JavaScript для стандартной [JS-библиотеки](https://dev.1c-bitrix.ru/rest_help/js_library/index.php) Битрикс24.
+Класс-обертка на JavaScript для стандартной [JS-библиотеки](https://dev.1c-bitrix.ru/rest_help/js_library/index.php) Битрикс24.
 Позволяет избежать [ада колбеков](http://callbackhell.ru) и работать c REST API Битрикс24
 с помощью асинхронных функций и асинхронных генераторов ECMAScript 9.
 
