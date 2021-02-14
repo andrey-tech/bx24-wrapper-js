@@ -1,10 +1,15 @@
 # Bitrix24 JS-lib Wrapper
 
-![Bitrix24 logo](./assets/bitrix24-logo.png)
+![Bitrix24 logo](./assets/bitrix24-logo.png)  
 
 Класс-обертка на JavaScript для стандартной [JS-библиотеки](https://dev.1c-bitrix.ru/rest_help/js_library/index.php) Битрикс24.
-Позволяет избежать [ада колбеков](http://callbackhell.ru) и работать c REST API Битрикс24
-с помощью асинхронных функций и асинхронных генераторов ECMAScript 9.
+Данный класс позволяет избежать [ада колбеков](http://callbackhell.ru) и работать c API Битрикс24
+с помощью асинхронных функций и асинхронных генераторов ECMAScript 9.  
+
+[![Latest Stable Version](https://poser.pugx.org/andrey-tech/bx24-wrapper-js/v)](https://packagist.org/packages/andrey-tech/bx24-wrapper-js)
+[![GitHub stars](https://img.shields.io/github/stars/andrey-tech/bx24-wrapper-js)](https://github.com/andrey-tech/bx24-wrapper-js/stargazers)
+[![GitHub forks](https://img.shields.io/github/forks/andrey-tech/bx24-wrapper-js)](https://github.com/andrey-tech/bx24-wrapper-js/network)
+[![License](https://poser.pugx.org/andrey-tech/bx24-wrapper-js/license)](https://packagist.org/packages/andrey-tech/bx24-wrapper-js)
 
 ## Содержание
 <!-- MarkdownTOC levels="1,2,3,4,5,6" autoanchor="true" autolink="true" -->
@@ -31,8 +36,8 @@
 
 - Стандартная [JS-библиотека](https://dev.1c-bitrix.ru/rest_help/js_library/index.php) Битрикс24,
 которая представляет собой JS SDK для REST, что позволяет обращаться к REST прямо из front-end приложения 
-не погружаясь в реализацию авторизации по OAuth 2.0.  
-Библиотека подключается следующим образом:
+не погружаясь в реализацию авторизации по OAuth 2.0. Для внешних приложений и вебхуков библиотека использоваться не может.  
+Подключение библиотеки:
 ```html
 <script src="//api.bitrix24.com/api/v1/"></script>
 ```
@@ -47,6 +52,8 @@
 <a id="%D0%9A%D0%BB%D0%B0%D1%81%D1%81-bx24wrapper"></a>
 ## Класс BX24Wrapper
 
+Создание нового объекта класса `BX24Wrapper`:
+
 - `new BX24Wrapper();`
 
 Дополнительные параметры работы устанавливаются через свойства объекта класса `BX24Wrapper`.
@@ -55,7 +62,7 @@
 ----------------------- | ---------------- | --------
 `batchSize`             | 50               | Максимальное число команд в одном пакете запросе ([не более 50](https://dev.1c-bitrix.ru/rest_help/general/lists.php))
 `throttle`              | 2                | Максимальное число запросов к API в секунду ([не более 2-х запросов в секунду](https://dev.1c-bitrix.ru/rest_help/rest_sum/index.php))
-`progress`              | `percent => {};` | Функция для контроля прогресса выполнения запросов в методах `callListMethod()`, `fetchList()`, `callLongBatch()` и `callLargeBatch()` (`percent` - прогресс, %)
+`progress`              | `percent => {};` | Функция для контроля прогресса выполнения запросов в методах `callListMethod()`, `fetchList()`, `callLongBatch()` и `callLargeBatch()` (`percent` - прогресс 0-100, %)
 
 ```js
 (async () => {
@@ -64,10 +71,11 @@
     // Устанавливаем максимальное число команд в одном пакете запросе
     bx24.batchSize = 25;
     
-    // Устанавливаем троттлинг запросов к API на уровне 1 запрос в 2 секунды
+    // Устанавливаем троттлинг запросов к API Битрикс24 на уровне 0,5 запросов в секунду,
+    // то есть 1 запрос в 2 секунды
     bx24.throttle = 0.5;
 
-    // Устанавливаем собственную функцию для контроля прогресса выполнения запросов в процентах
+    // Устанавливаем собственную функцию для вывода в веб-консоль прогресса выполнения запросов в процентах
     bx24.progress = percent => console.log(`Progress: ${percent}%`);
 
 })().catch(error => console.log('Error:', error));
@@ -114,7 +122,7 @@
 (async () => {
     let bx24 = new BX24Wrapper();
 
-    // Устанавливаем собственную функцию для отображения прогресса выполнения загрузки в процентах
+    // Устанавливаем собственную функцию для вывода в веб-консоль прогресса выполнения запросов в процентах
     bx24.progress = percent => console.log(`progress: ${percent}%`);
 
     let params = {
@@ -149,7 +157,7 @@
 (async () => {
     let bx24 = new BX24Wrapper();
 
-    // Устанавливаем собственную функцию для отображения прогресса выполнения загрузки в процентах
+    // Устанавливаем собственную функцию для вывода в веб-консоль прогресса выполнения запросов в процентах
     bx24.progress = percent => console.log(`progress: ${percent}%`);
 
     let params = {
@@ -317,7 +325,8 @@
 ## Обработка ошибок
 
 При возникновении ошибок в методах класса выбрасываются исключения.  
-Последний объект [ajaxResult](https://dev.1c-bitrix.ru/rest_help/js_library/rest/callMethod.php), полученный от стандартной библиотеки Битрикс24, доступен через вызов метода `getLastResult()`.
+Последний объект [ajaxResult](https://dev.1c-bitrix.ru/rest_help/js_library/rest/callMethod.php),
+полученный от стандартной библиотеки Битрикс24, может быть получен посредством метода `getLastResult()`.
 
 ```js
 (async () => {
@@ -340,7 +349,7 @@
 <a id="%D0%90%D0%B2%D1%82%D0%BE%D1%80"></a>
 ## Автор
 
-© 2019-2020 andrey-tech
+© 2019-2021 andrey-tech
 
 <a id="%D0%9B%D0%B8%D1%86%D0%B5%D0%BD%D0%B7%D0%B8%D1%8F"></a>
 ## Лицензия

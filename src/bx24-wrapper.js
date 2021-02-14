@@ -1,21 +1,22 @@
 /**
  * Простой класс-обертка на JavaScript для стандартной JS-библиотеки Битрикс24,
- * позволяющая избежать ада колбеков и работать c асинхроннми функциями
+ * позволяющая избежать ада колбеков и работать c асинхронными функциями
  * и асинхронными генераторами ECMAScript 9.
  *
  * @author    andrey-tech
- * @copyright 2019-2020 andrey-tech
+ * @copyright 2019-2021 andrey-tech
  * @see https://github.com/andrey-tech/bx24-wrapper-js
  * @license   MIT
  *
- * @version 1.4.1
+ * @version 1.4.2
  *
  * v1.0.0 (01.12.2019) Начальный релиз
- * v1.1.0 (28.05.2020) Рефракторинг
+ * v1.1.0 (28.05.2020) Рефакторинг
  * v1.2.0 (02.06.2020) Удален метод init()
  * v1.3.0 (03.06.2020) Добавлен метод getLastResult()
  * v1.4.0 (03.06.2020) Добавлен метод createCalls()
- * v1.4.1 (14.06.2020) Праметр throttle исправлен на 2
+ * v1.4.1 (14.06.2020) Параметр throttle исправлен на 2
+ * v1.4.2 (14.02.2021) Рефакторинг
  * 
  */
 
@@ -55,7 +56,7 @@ class BX24Wrapper {
 
         /**
          * Последний объект ajaxResult, полученный от библиотеки Битрикс24
-         * @type {оbject}
+         * @type {object}
          * @see https://dev.1c-bitrix.ru/rest_help/js_library/rest/callMethod.php
          */
         this.lastResult = {};
@@ -69,7 +70,7 @@ class BX24Wrapper {
 
     /**
      * Возвращает последний объект ajaxResult, полученный от библиотеки Битрикс24
-     * @type {оbject}
+     * @type {object}
      */
     getLastResult() {
         return this.lastResult;
@@ -194,8 +195,8 @@ class BX24Wrapper {
 
     /**
      * Вызывает BX24.callBatch() с максимальным числом команд не более 50 и возвращает объект промис
-     * @param  {array|object} method Пакет запросов
-     * @param  {bool} haltOnError Прерывать исполнение пакета в при возникновении ошибки
+     * @param  {array|object} calls Пакет запросов
+     * @param  {boolean} haltOnError Прерывать исполнение пакета в при возникновении ошибки
      * @return {object} Promise
      * @see https://dev.1c-bitrix.ru/rest_help/js_library/rest/callBatch.php
      */
@@ -231,8 +232,8 @@ class BX24Wrapper {
 
     /**
      * Вызывает BX24.callBatch() с произвольным числом запросов и возвращает объект промис
-     * @param  {array} method Пакет запросов
-     * @param  {bool} haltOnError Прерывать исполнение пакета в при возникновении ошибки
+     * @param  {array} calls Пакет запросов
+     * @param  {boolean} haltOnError Прерывать исполнение пакета в при возникновении ошибки
      * @return {object} Promise
      * @see https://dev.1c-bitrix.ru/rest_help/js_library/rest/callBatch.php
      */
@@ -268,8 +269,8 @@ class BX24Wrapper {
 
     /**
      * Вызывает BX24.callBatch() с произвольным числом команд в запросе и возвращает объект генератор
-     * @param  {array} method Пакет запросов
-     * @param  {bool} haltOnError Прерывать исполнение пакета в при возникновении ошибки
+     * @param  {array} calls Пакет запросов
+     * @param  {boolean} haltOnError Прерывать исполнение пакета в при возникновении ошибки
      * @return {object} Generator
      * @see https://dev.1c-bitrix.ru/rest_help/js_library/rest/callBatch.php
      */
@@ -304,7 +305,7 @@ class BX24Wrapper {
     }
 
     /**
-     * Обеспечивет троттлинг запросов к API
+     * Обеспечивает троттлинг запросов к API Битрикс24 на заданном уровне
      * @return {object} Promise
      */
     throttleCall() {
