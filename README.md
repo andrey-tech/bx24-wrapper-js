@@ -2,14 +2,17 @@
 
 ![Bitrix24 logo](./assets/bitrix24-logo.png)  
 
+[![Latest Stable Version](https://poser.pugx.org/andrey-tech/bx24-wrapper-js/v)](https://packagist.org/packages/andrey-tech/bx24-wrapper-js)
+[![GitHub stars](https://img.shields.io/github/stars/andrey-tech/bx24-wrapper-js)](https://github.com/andrey-tech/bx24-wrapper-js/stargazers)
+[![GitHub forks](https://img.shields.io/github/forks/andrey-tech/bx24-wrapper-js)](https://github.com/andrey-tech/bx24-wrapper-js/network)
+[![GitHub watchers](https://img.shields.io/github/watchers/andrey-tech/bx24-wrapper-js)](https://github.com/andrey-tech/bx24-wrapper-js/watchers)
+[![License](https://poser.pugx.org/andrey-tech/bx24-wrapper-js/license)](https://packagist.org/packages/andrey-tech/bx24-wrapper-js)
+
 Класс-обертка на JavaScript для стандартной [JS-библиотеки](https://dev.1c-bitrix.ru/rest_help/js_library/index.php) Битрикс24.
 Данный класс позволяет избежать [ада колбеков](http://callbackhell.ru) и работать c API Битрикс24
 с помощью асинхронных функций и асинхронных генераторов ECMAScript 9.  
 
-[![Latest Stable Version](https://poser.pugx.org/andrey-tech/bx24-wrapper-js/v)](https://packagist.org/packages/andrey-tech/bx24-wrapper-js)
-[![GitHub stars](https://img.shields.io/github/stars/andrey-tech/bx24-wrapper-js)](https://github.com/andrey-tech/bx24-wrapper-js/stargazers)
-[![GitHub forks](https://img.shields.io/github/forks/andrey-tech/bx24-wrapper-js)](https://github.com/andrey-tech/bx24-wrapper-js/network)
-[![License](https://poser.pugx.org/andrey-tech/bx24-wrapper-js/license)](https://packagist.org/packages/andrey-tech/bx24-wrapper-js)
+Разработчики на PHP могут воспользоваться классом-оберткой [andrey-tech/bitrix24-api-php](https://github.com/andrey-tech/bitrix24-api-php).
 
 ## Содержание
 <!-- MarkdownTOC levels="1,2,3,4,5,6" autoanchor="true" autolink="true" -->
@@ -34,9 +37,9 @@
 <a id="%D0%A2%D1%80%D0%B5%D0%B1%D0%BE%D0%B2%D0%B0%D0%BD%D0%B8%D1%8F"></a>
 ## Требования
 
-- Стандартная [JS-библиотека](https://dev.1c-bitrix.ru/rest_help/js_library/index.php) Битрикс24,
-которая представляет собой JS SDK для REST, что позволяет обращаться к REST прямо из front-end приложения 
-не погружаясь в реализацию авторизации по OAuth 2.0. Для внешних приложений и вебхуков библиотека использоваться не может.  
+- Стандартная [JS-библиотека](https://dev.1c-bitrix.ru/rest_help/js_library/index.php) Битрикс24 v1.0,
+которая представляет собой JavaScriptS SDK для REST API, что позволяет обращаться к API прямо из front-end приложения 
+не погружаясь в реализацию авторизации по OAuth 2.0. **Для внешних приложений и вебхуков библиотека использоваться не может.**  
 Подключение библиотеки:
 ```html
 <script src="//api.bitrix24.com/api/v1/"></script>
