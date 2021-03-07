@@ -15,26 +15,26 @@
 Разработчики на PHP могут воспользоваться классом-оберткой [andrey-tech/bitrix24-api-php](https://github.com/andrey-tech/bitrix24-api-php).
 
 ## Содержание
-<!-- MarkdownTOC levels="1,2,3,4,5,6" autoanchor="true" autolink="true" lowercase="all" -->
+<!-- MarkdownTOC levels="1,2,3,4,5,6" autoanchor="true" autolink="true" lowercase="all" link_prefix="user-content-" -->
 
-- [Требования](#%D1%82%D1%80%D0%B5%D0%B1%D0%BE%D0%B2%D0%B0%D0%BD%D0%B8%D1%8F)
-- [Класс BX24Wrapper](#%D0%BA%D0%BB%D0%B0%D1%81%D1%81-bx24wrapper)
-- [Методы класса BX24Wrapper](#%D0%BC%D0%B5%D1%82%D0%BE%D0%B4%D1%8B-%D0%BA%D0%BB%D0%B0%D1%81%D1%81%D0%B0-bx24wrapper)
-    - [Метод `async callMethod()`](#%D0%BC%D0%B5%D1%82%D0%BE%D0%B4-async-callmethod)
-    - [Метод `async callListMethod()`](#%D0%BC%D0%B5%D1%82%D0%BE%D0%B4-async-calllistmethod)
-    - [Метод `async *fetchList()`](#%D0%BC%D0%B5%D1%82%D0%BE%D0%B4-async-fetchlist)
-    - [Метод `async callBatch()`](#%D0%BC%D0%B5%D1%82%D0%BE%D0%B4-async-callbatch)
-    - [Метод `async callLongBatch()`](#%D0%BC%D0%B5%D1%82%D0%BE%D0%B4-async-calllongbatch)
-    - [Метод `async *callLargeBatch()`](#%D0%BC%D0%B5%D1%82%D0%BE%D0%B4-async-calllargebatch)
-    - [Метод `static createCalls()`](#%D0%BC%D0%B5%D1%82%D0%BE%D0%B4-static-createcalls)
-    - [Метод `getLastResult()`](#%D0%BC%D0%B5%D1%82%D0%BE%D0%B4-getlastresult)
-- [Обработка ошибок](#%D0%BE%D0%B1%D1%80%D0%B0%D0%B1%D0%BE%D1%82%D0%BA%D0%B0-%D0%BE%D1%88%D0%B8%D0%B1%D0%BE%D0%BA)
-- [Автор](#%D0%B0%D0%B2%D1%82%D0%BE%D1%80)
-- [Лицензия](#%D0%BB%D0%B8%D1%86%D0%B5%D0%BD%D0%B7%D0%B8%D1%8F)
+- [Требования](#user-content-%D1%82%D1%80%D0%B5%D0%B1%D0%BE%D0%B2%D0%B0%D0%BD%D0%B8%D1%8F)
+- [Класс BX24Wrapper](#user-content-%D0%BA%D0%BB%D0%B0%D1%81%D1%81-bx24wrapper)
+- [Методы класса BX24Wrapper](#user-content-%D0%BC%D0%B5%D1%82%D0%BE%D0%B4%D1%8B-%D0%BA%D0%BB%D0%B0%D1%81%D1%81%D0%B0-bx24wrapper)
+    - [Метод `async callMethod()`](#user-content-%D0%BC%D0%B5%D1%82%D0%BE%D0%B4-async-callmethod)
+    - [Метод `async callListMethod()`](#user-content-%D0%BC%D0%B5%D1%82%D0%BE%D0%B4-async-calllistmethod)
+    - [Метод `async *fetchList()`](#user-content-%D0%BC%D0%B5%D1%82%D0%BE%D0%B4-async-fetchlist)
+    - [Метод `async callBatch()`](#user-content-%D0%BC%D0%B5%D1%82%D0%BE%D0%B4-async-callbatch)
+    - [Метод `async callLongBatch()`](#user-content-%D0%BC%D0%B5%D1%82%D0%BE%D0%B4-async-calllongbatch)
+    - [Метод `async *callLargeBatch()`](#user-content-%D0%BC%D0%B5%D1%82%D0%BE%D0%B4-async-calllargebatch)
+    - [Метод `static createCalls()`](#user-content-%D0%BC%D0%B5%D1%82%D0%BE%D0%B4-static-createcalls)
+    - [Метод `getLastResult()`](#user-content-%D0%BC%D0%B5%D1%82%D0%BE%D0%B4-getlastresult)
+- [Обработка ошибок](#user-content-%D0%BE%D0%B1%D1%80%D0%B0%D0%B1%D0%BE%D1%82%D0%BA%D0%B0-%D0%BE%D1%88%D0%B8%D0%B1%D0%BE%D0%BA)
+- [Автор](#user-content-%D0%B0%D0%B2%D1%82%D0%BE%D1%80)
+- [Лицензия](#user-content-%D0%BB%D0%B8%D1%86%D0%B5%D0%BD%D0%B7%D0%B8%D1%8F)
 
 <!-- /MarkdownTOC -->
 
-<a id="%D1%82%D1%80%D0%B5%D0%B1%D0%BE%D0%B2%D0%B0%D0%BD%D0%B8%D1%8F"></a>
+<a id="user-content-%D1%82%D1%80%D0%B5%D0%B1%D0%BE%D0%B2%D0%B0%D0%BD%D0%B8%D1%8F"></a>
 ## Требования
 
 - Стандартная [JS-библиотека](https://dev.1c-bitrix.ru/rest_help/js_library/index.php) Битрикс24 v1.0,
@@ -52,7 +52,7 @@
     - Microsoft Edge >= 79
     - Opera >= 50
 
-<a id="%D0%BA%D0%BB%D0%B0%D1%81%D1%81-bx24wrapper"></a>
+<a id="user-content-%D0%BA%D0%BB%D0%B0%D1%81%D1%81-bx24wrapper"></a>
 ## Класс BX24Wrapper
 
 Создание нового объекта класса `BX24Wrapper`:
@@ -84,10 +84,10 @@
 })().catch(error => console.log('Error:', error));
 ```
  
-<a id="%D0%BC%D0%B5%D1%82%D0%BE%D0%B4%D1%8B-%D0%BA%D0%BB%D0%B0%D1%81%D1%81%D0%B0-bx24wrapper"></a>
+<a id="user-content-%D0%BC%D0%B5%D1%82%D0%BE%D0%B4%D1%8B-%D0%BA%D0%BB%D0%B0%D1%81%D1%81%D0%B0-bx24wrapper"></a>
 ## Методы класса BX24Wrapper
 
-<a id="%D0%BC%D0%B5%D1%82%D0%BE%D0%B4-async-callmethod"></a>
+<a id="user-content-%D0%BC%D0%B5%D1%82%D0%BE%D0%B4-async-callmethod"></a>
 ### Метод `async callMethod()`
 
 Вызывает указанный метод REST-сервиса с заданными параметрам и возвращает объект Promise (промис).  
@@ -109,7 +109,7 @@
 })().catch(error => console.log('Error:', error));
 ```
 
-<a id="%D0%BC%D0%B5%D1%82%D0%BE%D0%B4-async-calllistmethod"></a>
+<a id="user-content-%D0%BC%D0%B5%D1%82%D0%BE%D0%B4-async-calllistmethod"></a>
 ### Метод `async callListMethod()`
 
 Вызывает указанный **списочный** метод REST-сервиса с заданными параметрам и возвращает объект Promise (промис).
@@ -142,7 +142,7 @@
 })().catch(error => console.log('Error:', error));
 ```
 
-<a id="%D0%BC%D0%B5%D1%82%D0%BE%D0%B4-async-fetchlist"></a>
+<a id="user-content-%D0%BC%D0%B5%D1%82%D0%BE%D0%B4-async-fetchlist"></a>
 ### Метод `async *fetchList()`
 
 Вызывает указанный **списочный** метод REST-сервиса с заданными параметрам и возвращает объект Generator (генератор).
@@ -178,7 +178,7 @@
 })().catch(error => console.log('Error:', error));
 ```
 
-<a id="%D0%BC%D0%B5%D1%82%D0%BE%D0%B4-async-callbatch"></a>
+<a id="user-content-%D0%BC%D0%B5%D1%82%D0%BE%D0%B4-async-callbatch"></a>
 ### Метод `async callBatch()`
 
 Отправляет пакет запросов к REST-сервису с максимальным числом команд в запросе 50 и возвращает Promise (промис).
@@ -219,7 +219,7 @@
 })().catch(error => console.log('Error:', error));
 ```
 
-<a id="%D0%BC%D0%B5%D1%82%D0%BE%D0%B4-async-calllongbatch"></a>
+<a id="user-content-%D0%BC%D0%B5%D1%82%D0%BE%D0%B4-async-calllongbatch"></a>
 ### Метод `async callLongBatch()`
 
 Отправляет пакет запросов к REST-сервису в виде массива с произвольным числом команд в запросе и возвращает Promise (промис).
@@ -249,7 +249,7 @@
 })().catch(error => console.log('Error:', error));
 ```
 
-<a id="%D0%BC%D0%B5%D1%82%D0%BE%D0%B4-async-calllargebatch"></a>
+<a id="user-content-%D0%BC%D0%B5%D1%82%D0%BE%D0%B4-async-calllargebatch"></a>
 ### Метод `async *callLargeBatch()`
 
 Отправляет пакет запросов к REST-сервису в виде массива с произвольным числом команд в запросе и возвращает Generator (генератор).
@@ -282,7 +282,7 @@
 })().catch(error => console.log('Error:', error));
 ```
 
-<a id="%D0%BC%D0%B5%D1%82%D0%BE%D0%B4-static-createcalls"></a>
+<a id="user-content-%D0%BC%D0%B5%D1%82%D0%BE%D0%B4-static-createcalls"></a>
 ### Метод `static createCalls()`
 
 Создает пакет однотипных запросов для методов `callBatch()`, `callLongBatch()` и `callLargeBatch()`
@@ -315,7 +315,7 @@
 ```
 
 
-<a id="%D0%BC%D0%B5%D1%82%D0%BE%D0%B4-getlastresult"></a>
+<a id="user-content-%D0%BC%D0%B5%D1%82%D0%BE%D0%B4-getlastresult"></a>
 ### Метод `getLastResult()`
 
 Возвращает последний объект [ajaxResult](https://dev.1c-bitrix.ru/rest_help/js_library/rest/callMethod.php),
@@ -324,7 +324,7 @@
 - `getLastResult();`
 
 
-<a id="%D0%BE%D0%B1%D1%80%D0%B0%D0%B1%D0%BE%D1%82%D0%BA%D0%B0-%D0%BE%D1%88%D0%B8%D0%B1%D0%BE%D0%BA"></a>
+<a id="user-content-%D0%BE%D0%B1%D1%80%D0%B0%D0%B1%D0%BE%D1%82%D0%BA%D0%B0-%D0%BE%D1%88%D0%B8%D0%B1%D0%BE%D0%BA"></a>
 ## Обработка ошибок
 
 При возникновении ошибок в методах класса выбрасываются исключения.  
@@ -349,12 +349,12 @@
 })().catch(error => console.log('Error:', error));
 ```
 
-<a id="%D0%B0%D0%B2%D1%82%D0%BE%D1%80"></a>
+<a id="user-content-%D0%B0%D0%B2%D1%82%D0%BE%D1%80"></a>
 ## Автор
 
 © 2019-2021 andrey-tech
 
-<a id="%D0%BB%D0%B8%D1%86%D0%B5%D0%BD%D0%B7%D0%B8%D1%8F"></a>
+<a id="user-content-%D0%BB%D0%B8%D1%86%D0%B5%D0%BD%D0%B7%D0%B8%D1%8F"></a>
 ## Лицензия
 
 Данный класс распространяется на условиях лицензии [MIT](./LICENSE).
