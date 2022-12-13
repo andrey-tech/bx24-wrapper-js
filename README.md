@@ -170,7 +170,7 @@
     // Загружем список всех товаров в заданном товарном каталоге используя асинхронный генератор
     let generator = bx24.fetchList('crm.product.list', params);
     for await (let products of generator) {
-        for (let product as $products) {
+        for (let product as products) {
             console.log('Product:', product);
         }
     }
@@ -352,10 +352,9 @@
 <a id="%D0%B0%D0%B2%D1%82%D0%BE%D1%80"></a>
 ## Автор
 
-© 2019-2021 andrey-tech
+© 2019-2022 andrey-tech
 
 <a id="%D0%BB%D0%B8%D1%86%D0%B5%D0%BD%D0%B7%D0%B8%D1%8F"></a>
 ## Лицензия
 
 Данный класс распространяется на условиях лицензии [MIT](./LICENSE).
-
