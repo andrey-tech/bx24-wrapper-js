@@ -183,23 +183,23 @@ class BX24Wrapper {
      * @param  {string} method Списочный метод запроса
      * @param  {object} params Параметры запроса
      * @param  {function} dataExtractor Функция для извлечения данных из результатов запроса
+     * @param  {string} idKey Имя поля ID сущности ('ID' или 'id')
      *
      * @return {object} Generator
      *
      * @see https://dev.1c-bitrix.ru/rest_help/js_library/rest/callMethod.php BX24.callMethod
      */
-    async *fetchList(method, params = {}, dataExtractor = null) {
+    async *fetchList(method, params = {}, dataExtractor = null, idKey = 'ID') {
         params.order = params.order || {};
         params.filter = params.filter || {};
         params.start = -1;
 
-        let idKey = 'id' in params.order ? 'id' : 'ID';
+        let moreIdKey = '>' + idKey,
+            counter = 0,
+            total = 0;
 
         params.order[ idKey ] = 'ASC';
-        params.filter[ '>' . idKey ] = 0;
-
-        let counter = 0,
-            total = 0;
+        params.filter[ moreIdKey ] = 0;
 
         this.progress(0);
 
@@ -207,7 +207,7 @@ class BX24Wrapper {
             let data = await this.callMethod(method, params, dataExtractor),
                 result = this.lastResult;
 
-            if (params.filter[ '>' . idKey ] === 0) {
+            if (params.filter[ moreIdKey ] === 0) {
                 total = result.total();
             }
 
@@ -224,7 +224,7 @@ class BX24Wrapper {
                 break;
             }
  
-            params.filter[ '>' . idKey ] = data[ data.length - 1 ][ idKey ];
+            params.filter[ moreIdKey ] = data[ data.length - 1 ][ idKey ];
 
         } while (true);
     }
