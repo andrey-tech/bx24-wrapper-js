@@ -40,7 +40,8 @@
 - Стандартная [JS-библиотека](https://dev.1c-bitrix.ru/rest_help/js_library/index.php) Битрикс24 v1.0,
 которая представляет собой JavaScriptS SDK для REST API, что позволяет обращаться к API прямо из front-end приложения 
 не погружаясь в реализацию авторизации по OAuth 2.0. **Для внешних приложений и вебхуков библиотека использоваться не может.**  
-Подключение библиотеки:
+
+Подключение стандартной библиотеки Битрикс24 v1.0:
 ```html
 <script src="//api.bitrix24.com/api/v1/"></script>
 ```
@@ -61,11 +62,11 @@
 
 Дополнительные параметры работы устанавливаются через свойства объекта класса `BX24Wrapper`.
 
-Свойство                | По умолчанию     | Описание
------------------------ | ---------------- | --------
-`batchSize`             | 50               | Максимальное число команд в одном пакете запросе ([не более 50](https://dev.1c-bitrix.ru/rest_help/general/lists.php))
-`throttle`              | 2                | Максимальное число запросов к API в секунду ([не более 2-х запросов в секунду](https://dev.1c-bitrix.ru/rest_help/rest_sum/index.php))
-`progress`              | `percent => {};` | Функция для контроля прогресса выполнения запросов в методах `callListMethod()`, `fetchList()`, `callLongBatch()` и `callLargeBatch()` (`percent` - прогресс 0-100, %)
+| Свойство    | По умолчанию     | Описание                                                                                                                                                               |
+|-------------|------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `batchSize` | 50               | Максимальное число команд в одном пакете запросе ([не более 50](https://dev.1c-bitrix.ru/rest_help/general/lists.php))                                                 |
+| `throttle`  | 2                | Максимальное число запросов к API в секунду ([не более 2-х запросов в секунду](https://dev.1c-bitrix.ru/rest_help/rest_sum/index.php))                                 |
+| `progress`  | `percent => {};` | Функция для контроля прогресса выполнения запросов в методах `callListMethod()`, `fetchList()`, `callLongBatch()` и `callLargeBatch()` (`percent` - прогресс 0-100, %) |
 
 ```js
 (async () => {
@@ -90,13 +91,14 @@
 <a id="%D0%BC%D0%B5%D1%82%D0%BE%D0%B4-async-callmethod"></a>
 ### Метод `async callMethod()`
 
-Вызывает указанный метод REST-сервиса с заданными параметрам и возвращает объект Promise (промис).  
-Обертка метода [callMethod](https://dev.1c-bitrix.ru/rest_help/js_library/rest/callMethod.php) стандартной библиотеки.
+Вызывает указанный метод REST-сервиса с заданными параметрами и возвращает объект Promise (промис).  
+Обертка метода [callMethod](https://dev.1c-bitrix.ru/rest_help/js_library/rest/callMethod.php) стандартной библиотеки Битрикс24.
 
-- `callMethod(method [, params = {} ]);`  
+- `callMethod(method [, params = {}, dataExtractor = null ]);`  
     Параметры:
     - *string* `method` - строка, указывающая вызываемый метод REST-сервиса;
-    - *object* `params` - объект параметров для метода REST-сервиса.
+    - *object* `params` - объект параметров для метода REST-сервиса;
+    - *function* `dataExtractor` - функция для извлечения данных из результатов запроса.
     
 ```js
 (async () => {
@@ -112,14 +114,15 @@
 <a id="%D0%BC%D0%B5%D1%82%D0%BE%D0%B4-async-calllistmethod"></a>
 ### Метод `async callListMethod()`
 
-Вызывает указанный **списочный** метод REST-сервиса с заданными параметрам и возвращает объект Promise (промис).
+Вызывает указанный **списочный** метод REST-сервиса с заданными параметрами и возвращает объект Promise (промис).
 Позволяет одним вызовом загружать произвольное число сущностей с фильтрацией по параметрам в виде массива объектов
 и контролировать прогресс выполнения загрузки.
 
-- `callListMethod(listMethod [, params = {} ]);`  
+- `callListMethod(listMethod [, params = {}, dataExtractor = null ]);`  
     Параметры:
     - *string* `listMethod` - строка, указывающая вызываемый списочный метод REST-сервиса;
-    - *object* `params` - объект параметров для списочного метода REST-сервиса.
+    - *object* `params` - объект параметров для списочного метода REST-сервиса;
+    - *function* `dataExtractor` - функция для извлечения данных из результатов запроса.
 
 ```js
 (async () => {
@@ -133,8 +136,22 @@
         select: [ '*', 'PROPERTY_*' ]
     };
 
-    // Загружем список всех товаров в заданном товарном каталоге
+    // Загружем список всех товаров в заданном товарном каталоге CRM
     let products = await bx24.callListMethod('crm.product.list', params);
+    for (let product of products) {
+        console.log('Product:', product);
+    }
+
+    params = {
+        filter: { iblockId: 11 },
+        select: [ '*', 'id', 'iblockId' ]
+    };
+    
+    // Задаем собственную функцию для извлечения массива товаров из объекта с результатами запроса
+    let dataExtractor = data => data.products;
+    
+    // Загружем список всех товаров в заданном товарном каталоге
+    products = await bx24.callListMethod('catalog.product.list', params, dataExtractor);
     for (let product of products) {
         console.log('Product:', product);
     }
@@ -145,16 +162,19 @@
 <a id="%D0%BC%D0%B5%D1%82%D0%BE%D0%B4-async-fetchlist"></a>
 ### Метод `async *fetchList()`
 
-Вызывает указанный **списочный** метод REST-сервиса с заданными параметрам и возвращает объект Generator (генератор).
+Вызывает указанный **списочный** метод REST-сервиса с заданными параметрами и возвращает объект Generator (генератор).
 Позволяет одним вызовом загружать произвольное число сущностей с фильтрацией по параметрам в виде массива объектов
 и контролировать прогресс выполнения загрузки.  
-Реализует быстрый алгоритм, описанный в статье ["Как правильно выгружать большие объемы данных"](https://dev.1c-bitrix.ru/rest_help/rest_sum/start.php).  
+
+Реализует быстрый алгоритм, описанный в статье ["Как правильно выгружать большие объемы данных"](https://dev.1c-bitrix.ru/rest_help/rest_sum/start.php). 
 Использование асинхронного генератора дает существенную экономию памяти при обработке большого количества сущностей.
 
-- `fetchList(listMethod [, params = {} ]);`  
+- `fetchList(listMethod [, params = {}, dataExtractor = null, idKey = 'ID' ]);`  
     Параметры:
     - *string* `listMethod` - строка, указывающая вызываемый списочный метод REST-сервиса;
-    - *object* `params` - объект параметров для списочного метода REST-сервиса.
+    - *object* `params` - объект параметров для списочного метода REST-сервиса;
+    - *function* `dataExtractor` - функция для извлечения данных из результатов запроса;
+    - *string* `idKey` - имя поля ID загружаемых сущностей (`ID` - CRM или `id`).
 
 ```js
 (async () => {
@@ -167,14 +187,33 @@
         filter: { CATALOD_ID: 21 }
     };
 
-    // Загружем список всех товаров в заданном товарном каталоге используя асинхронный генератор
+    // Загружем список всех товаров в заданном товарном каталоге CRM, используя асинхронный генератор
     let generator = bx24.fetchList('crm.product.list', params);
     for await (let products of generator) {
-        for (let product as products) {
+        for (let product of products) {
             console.log('Product:', product);
         }
     }
 
+    params = {
+        filter: { iblockId: 11 },
+        select: [ '*', 'id', 'iblockId' ]
+    };    
+    
+    // Задаем собственную функцию для извлечения массива товаров из объекта с результатами запроса   
+    let dataExtractor = data => data.products;
+    
+    // Задаем имя поля ID загружаемых сущностей (товаров) в результатах запроса
+    let idKey = 'id';
+
+    // Загружем список всех товаров в заданном товарном каталоге, используя асинхронный генератор
+    generator = bx24.fetchList('catalog.product.list', params, dataExtractor, idKey);
+    for await (let products of generator) {
+        for (let product of products) {
+            console.log('Product:', product);
+        }
+    }
+        
 })().catch(error => console.log('Error:', error));
 ```
 
@@ -183,12 +222,13 @@
 
 Отправляет пакет запросов к REST-сервису с максимальным числом команд в запросе 50 и возвращает Promise (промис).
 Позволяет получить результаты пакетного выполнения запросов в виде массива или объекта.
-Обертка метода [callBatch](https://dev.1c-bitrix.ru/rest_help/js_library/rest/callBatch.php) стандартной библиотеки.
+Обертка метода [callBatch](https://dev.1c-bitrix.ru/rest_help/js_library/rest/callBatch.php) стандартной библиотеки Битрикс24.
 
-- `callBatch(calls [, haltOnError = true ]);`  
+- `callBatch(calls [, haltOnError = true, dataExtractor = null ]);`  
     Параметры:
     - *array|object* `calls` - пакет запросов в виде массива или объекта;
-    - *bool* `haltOnError` - флаг "прерывать исполнение пакета в при возникновении ошибки".
+    - *bool* `haltOnError` - флаг "прерывать исполнение пакета в при возникновении ошибки";
+    - *function* `dataExtractor` - функция для извлечения данных из результатов запроса.
 
 ```js
 (async () => {
@@ -225,10 +265,11 @@
 Отправляет пакет запросов к REST-сервису в виде массива с произвольным числом команд в запросе и возвращает Promise (промис).
 Позволяет получить результаты пакетного выполнения запросов в виде массива.
 
-- `callLongBatch(calls [, haltOnError = true ]);`  
+- `callLongBatch(calls [, haltOnError = true, dataExtractor = null ]);`  
     Параметры:
     - *array* `calls` - пакет запросов в виде массива;
-    - *bool* `haltOnError` - флаг "прерывать исполнение пакета в при возникновении ошибки".
+    - *bool* `haltOnError` - флаг "прерывать исполнение пакета в при возникновении ошибки";
+    - *function* `dataExtractor` - функция для извлечения данных из результатов запроса. 
 
 ```js
 (async () => {
@@ -256,10 +297,11 @@
 Позволяет получить результаты пакетного выполнения запросов в виде массива.
 Использование асинхронного генератора дает существенную экономию памяти при работе с длинными пакетами запросов.
 
-- `callLargeBatch(calls [, haltOnError = true ]);`  
+- `callLargeBatch(calls [, haltOnError = true, dataExtractor = null ]);`  
     Параметры:
     - *array* `calls` - пакет запросов в виде массива;
-    - *bool* `haltOnError` - флаг "прерывать исполнение пакета в при возникновении ошибки".
+    - *bool* `haltOnError` - флаг "прерывать исполнение пакета в при возникновении ошибки";
+    - *function* `dataExtractor` - функция для извлечения данных из результатов запроса. 
 
 ```js
 (async () => {
@@ -291,7 +333,7 @@
 - `BX24Wrapper.createCalls(method, items);`  
     Параметры:
     - *string* `method` - строка, указывающая вызываемый метод REST-сервиса во всех запросах;
-    - *array* `items` - массив параметров запросов;
+    - *array* `items` - массив параметров запросов.
 
 ```js
 (async () => {
@@ -352,7 +394,7 @@
 <a id="%D0%B0%D0%B2%D1%82%D0%BE%D1%80"></a>
 ## Автор
 
-© 2019-2022 andrey-tech
+© 2019-2023 andrey-tech
 
 <a id="%D0%BB%D0%B8%D1%86%D0%B5%D0%BD%D0%B7%D0%B8%D1%8F"></a>
 ## Лицензия
