@@ -8,7 +8,7 @@
  * @link      https://github.com/andrey-tech/bx24-wrapper-js
  * @license   MIT
  *
- * @version 1.5.0
+ * @version 1.5.1
  *
  * v1.0.0 (01.12.2019) Начальный релиз
  * v1.1.0 (28.05.2020) Рефакторинг
@@ -18,7 +18,7 @@
  * v1.4.1 (14.06.2020) Параметр throttle исправлен на 2
  * v1.4.2 (14.02.2021) Рефакторинг
  * v1.5.0 (11.03.2023) Добавлен параметр dataExtractor в методы класса, рефакторинг
- * 
+ * v1.5.1 (06.08.2023) Исправлено поведение метода callBatch() при возникновении ошибки, рефакторинг
  */
 
 /* jshint esversion: 9 */
@@ -233,7 +233,7 @@ class BX24Wrapper {
      * Вызывает BX24.callBatch() с максимальным числом команд не более 50 и возвращает объект промис.
      *
      * @param  {array|object} calls Пакет запросов
-     * @param  {boolean} haltOnError Прерывать исполнение пакета в при возникновении ошибки
+     * @param  {boolean} haltOnError Прерывать исполнение пакета при возникновении ошибки
      * @param  {function} dataExtractor Функция для извлечения данных из результатов запроса
      *
      * @return {object} Promise
@@ -253,6 +253,10 @@ class BX24Wrapper {
 
                     for (let result of results) {
                         if (result.status != 200 || result.error()) {
+                            if (!haltOnError && result.error()) {
+                                continue;
+                            }
+
                             return reject(`${result.error()} (callBatch ${result.query.method}: ${result.query.data})`);
                         }
 
@@ -265,7 +269,11 @@ class BX24Wrapper {
                         let result = results[ key ];
 
                         if (result.status != 200 || result.error()) {
-                            return reject(`${result.error()} (callBatch ${result.query.method}: ${result.query.data})`);                            
+                            if (!haltOnError && result.error()) {
+                                continue;
+                            }
+
+                            return reject(`${result.error()} (callBatch ${result.query.method}: ${result.query.data})`);
                         }
 
                         data[ key ] = dataExtractor ? dataExtractor(result.data()) : result.data();
@@ -283,7 +291,7 @@ class BX24Wrapper {
      * Вызывает BX24.callBatch() с произвольным числом запросов и возвращает объект промис.
      *
      * @param  {array} calls Пакет запросов
-     * @param  {boolean} haltOnError Прерывать исполнение пакета в при возникновении ошибки
+     * @param  {boolean} haltOnError Прерывать исполнение пакета при возникновении ошибки
      * @param  {function} dataExtractor Функция для извлечения данных из результатов запроса
      *
      * @return {object} Promise
@@ -292,7 +300,7 @@ class BX24Wrapper {
      */
     async callLongBatch(calls, haltOnError = true, dataExtractor = null) {
         if (! Array.isArray(calls)) {
-            throw "Parameter 'calls' must be an array";
+            throw "Parameter 'calls' must be an array.";
         }
 
         let data = [],
@@ -324,7 +332,7 @@ class BX24Wrapper {
      * Вызывает BX24.callBatch() с произвольным числом команд в запросе и возвращает объект генератор.
      *
      * @param  {array} calls Пакет запросов
-     * @param  {boolean} haltOnError Прерывать исполнение пакета в при возникновении ошибки
+     * @param  {boolean} haltOnError Прерывать исполнение пакета при возникновении ошибки
      * @param  {function} dataExtractor Функция для извлечения данных из результатов запроса
      *
      * @return {object} Generator
@@ -333,7 +341,7 @@ class BX24Wrapper {
      */
     async *callLargeBatch(calls, haltOnError = true, dataExtractor = null) {
         if (! Array.isArray(calls)) {
-            throw "Parameter 'calls' must be an array";
+            throw "Parameter 'calls' must be an array.";
         }
 
         let total = calls.length,
